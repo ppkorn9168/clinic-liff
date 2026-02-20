@@ -7,58 +7,45 @@
 </head>
 
 <body style="text-align:center;font-family:sans-serif;padding-top:60px;">
-
-  <h2>📍 แชร์ตำแหน่งของคุณ</h2>
-
-  <button onclick="sendLocation()" 
-    style="padding:15px 30px;
-           font-size:18px;
-           background:#06C755;
-           color:white;
-           border:none;
-           border-radius:12px;">
-    ส่งตำแหน่งตอนนี้
-  </button>
+  <h3>กำลังดึงตำแหน่งของคุณ...</h3>
 
 <script>
-  async function main() {
-    await liff.init({ liffId: "https://liff.line.me/2009188891-cjzhkEr2" })
+async function main() {
+  await liff.init({ liffId: "2009188891-cjzhkEr2" })
+
+  if (!navigator.geolocation) {
+    alert("อุปกรณ์ไม่รองรับ GPS")
+    liff.closeWindow()
+    return
   }
 
-  async function sendLocation() {
+  navigator.geolocation.getCurrentPosition(
+    async function(position) {
 
-    if (!navigator.geolocation) {
-      alert("อุปกรณ์ไม่รองรับ GPS")
-      return
+      const lat = position.coords.latitude
+      const lng = position.coords.longitude
+
+      await liff.sendMessages([
+        {
+          type: "location",
+          title: "ตำแหน่งลูกค้า",
+          address: "ตำแหน่งปัจจุบัน",
+          latitude: lat,
+          longitude: lng
+        }
+      ])
+
+      liff.closeWindow()
+    },
+    function(error) {
+      alert("กรุณาอนุญาตให้เข้าถึงตำแหน่ง")
+      liff.closeWindow()
     }
+  )
+}
 
-    navigator.geolocation.getCurrentPosition(
-      async function(position) {
-
-        const lat = position.coords.latitude
-        const lng = position.coords.longitude
-
-        await liff.sendMessages([
-          {
-            type: "location",
-            title: "ตำแหน่งลูกค้า",
-            address: "ตำแหน่งปัจจุบัน",
-            latitude: lat,
-            longitude: lng
-          }
-        ])
-
-        liff.closeWindow()
-      },
-      function(error) {
-        alert("กรุณาอนุญาตให้เข้าถึงตำแหน่ง")
-      }
-    )
-  }
-
-  main()
+main()
 </script>
 
 </body>
 </html>
-
