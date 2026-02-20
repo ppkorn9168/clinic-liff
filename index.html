@@ -1,30 +1,38 @@
-<script>
-async function main() {
-  await liff.init({ liffId: "2009188891-cjzhkEr2" });
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Clinic Location</title>
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body style="text-align:center;font-family:sans-serif;padding-top:50px;">
 
-  if (!navigator.geolocation) {
-    alert("อุปกรณ์ไม่รองรับการดึงตำแหน่ง");
-    return;
+  <h2>📍 แชร์ตำแหน่งคลินิก</h2>
+  <button onclick="sendLocation()" 
+    style="padding:15px 30px;font-size:18px;background:#06C755;color:white;border:none;border-radius:10px;">
+    ส่งตำแหน่ง
+  </button>
+
+<script>
+  async function main() {
+    await liff.init({ liffId: "2009188891-cjzhkEr2" })
   }
 
-  navigator.geolocation.getCurrentPosition(
-    async (position) => {
-      await liff.sendMessages([{
+  async function sendLocation() {
+    await liff.sendMessages([
+      {
         type: "location",
-        title: "ตำแหน่งลูกค้า",
-        address: "แชร์จากคลินิก",
-        latitude: position.coords.latitude,
-        longitude: position.coords.longitude
-      }]);
+        title: "คลินิกของเรา",
+        address: "ใส่ที่อยู่คลินิกที่นี่",
+        latitude: 13.7563,
+        longitude: 100.5018
+      }
+    ])
+    liff.closeWindow()
+  }
 
-      liff.closeWindow();
-    },
-    (error) => {
-      alert("กรุณาอนุญาตการเข้าถึงตำแหน่ง");
-      liff.closeWindow();
-    }
-  );
-}
-
-main();
+  main()
 </script>
+
+</body>
+</html>
