@@ -5,12 +5,19 @@
   <title>Clinic Location</title>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
 </head>
-<body style="text-align:center;font-family:sans-serif;padding-top:50px;">
 
-  <h2>📍 แชร์ตำแหน่งคลินิก</h2>
+<body style="text-align:center;font-family:sans-serif;padding-top:60px;">
+
+  <h2>📍 แชร์ตำแหน่งของคุณ</h2>
+
   <button onclick="sendLocation()" 
-    style="padding:15px 30px;font-size:18px;background:#06C755;color:white;border:none;border-radius:10px;">
-    ส่งตำแหน่ง
+    style="padding:15px 30px;
+           font-size:18px;
+           background:#06C755;
+           color:white;
+           border:none;
+           border-radius:12px;">
+    ส่งตำแหน่งตอนนี้
   </button>
 
 <script>
@@ -19,16 +26,34 @@
   }
 
   async function sendLocation() {
-    await liff.sendMessages([
-      {
-        type: "location",
-        title: "คลินิกของเรา",
-        address: "ใส่ที่อยู่คลินิกที่นี่",
-        latitude: 13.7563,
-        longitude: 100.5018
+
+    if (!navigator.geolocation) {
+      alert("อุปกรณ์ไม่รองรับ GPS")
+      return
+    }
+
+    navigator.geolocation.getCurrentPosition(
+      async function(position) {
+
+        const lat = position.coords.latitude
+        const lng = position.coords.longitude
+
+        await liff.sendMessages([
+          {
+            type: "location",
+            title: "ตำแหน่งลูกค้า",
+            address: "ตำแหน่งปัจจุบัน",
+            latitude: lat,
+            longitude: lng
+          }
+        ])
+
+        liff.closeWindow()
+      },
+      function(error) {
+        alert("กรุณาอนุญาตให้เข้าถึงตำแหน่ง")
       }
-    ])
-    liff.closeWindow()
+    )
   }
 
   main()
