@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+</head>
+<body>
+  <h2>กำลังดึงตำแหน่ง...</h2>
+
+  <script>
+    async function main() {
+      await liff.init({ liffId: "ใส่LIFFIDตรงนี้" });
+
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        await liff.sendMessages([{
+          type: "location",
+          title: "ตำแหน่งลูกค้า",
+          address: "แชร์จากคลินิก",
+          latitude: position.coords.latitude,
+          longitude: position.coords.longitude
+        }]);
+
+        liff.closeWindow();
+      });
+    }
+    main();
+  </script>
+</body>
+</html>
